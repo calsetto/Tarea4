@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,12 +19,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements Edit_info.InfoListener {
+public class MainActivity extends AppCompatActivity implements Edit_info.InfoListener, GestureDetector.OnGestureListener {
 
     private Button boton1, boton2, boton3;
     private CheckBox musica, carro, calle, persona;
     private TextView var1, var2, var3;
     private ImageView car, street, person, music;
+    private static final  String TAG = "Swipe Position";
+    float x1, x2, y1,y2;
+    int MIN_DISTANCE = 150;
+    GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements Edit_info.InfoLis
         street = (ImageView) findViewById(R.id.imageView3);
         person = (ImageView) findViewById(R.id.imageView4);
         music = (ImageView) findViewById(R.id.imageView5);
+
+        this.gestureDetector = new GestureDetector(MainActivity.this, this);
 
         //SetOnclicListener
 
@@ -117,5 +125,60 @@ public class MainActivity extends AppCompatActivity implements Edit_info.InfoLis
         var1.setText(value1);
         var2.setText(value2);
         var3.setText(value3);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float valueX = x2 - x1;
+
+                if(Math.abs(valueX) > MIN_DISTANCE){
+                    //left to right
+                    if(x2 < x1){
+                        finish();
+                    }
+                }
+
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
     }
 }
